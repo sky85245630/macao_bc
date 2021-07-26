@@ -1,54 +1,30 @@
 <template>
     <div class="home" style="margin: 20px 0 ;">
-        <h1 style="text-align: left;">開獎公告</h1>
-        <div style="text-align: left;">
-            <el-button round :type="type == 0 ? 'danger' : ''" @click="type = 0"
-                >澳門六合彩</el-button
+        <el-row>
+            <el-col :span="5"
+                ><h1 style="text-align: left;">開獎視頻</h1></el-col
             >
+            <el-col :span="19"
+                ><h4 style="text-align: left;line-height: 50px;">
+                    <span style="color: #a68452;">即時開獎驗證：</span>
+                    開獎現場直播，同步播報中央電視臺1套視頻，開獎過程100%公開公正！
+                </h4></el-col
+            >
+        </el-row>
 
-            <el-button :type="type == 1 ? 'danger' : ''" round @click="type = 1"
-                >接口調用</el-button
-            >
+        <div style="text-align: left;">
+            <el-button type="danger" round>澳門六合彩</el-button>
         </div>
 
-        <div v-show="type == 0">
-            <div class="home_box" style="margin-bottom:30px">
-                <div style="padding:30px 20px">
-                    <el-row class="mt-5">
-                        <el-col :span="15">
-                            <span style="font-weight:bold"
-                                >澳門六合彩 第<span
-                                    style="font-weight:200;color:red"
-                                >
-                                    2021203 </span
-                                >期</span
-                            >
+        <div class="mt30">
+            <el-carousel height="423px">
+                <el-carousel-item v-for="item in imgUrl" :key="item">
+                    <img :src="item" alt="" style="width:100%" />
+                </el-carousel-item>
+            </el-carousel>
+        </div>
 
-                            <div class="num">
-                                <span>
-                                    <span
-                                        class="ball blue"
-                                        v-for="e in draw_num.split(',')"
-                                        :key="e"
-                                    >
-                                        <span class="balls">{{ e }}</span>
-                                        <span class="shengxiao">虎</span>
-                                    </span>
-                                </span>
-                            </div>
-                        </el-col>
-                        <el-col :span="9">
-                            <span style="color:red;width:100%"
-                                >2021207<span style="color:black"
-                                    >期截止時間：</span
-                                >
-                                2021-07-26 21:15:00</span
-                            ><br />
-                            <span style="font-size:80px">05:57:30</span>
-                        </el-col>
-                    </el-row>
-                </div>
-            </div>
+        <div class="mt30">
             <el-row>
                 <el-col :span="16" style="text-align:left"
                     >澳門六合彩 開獎公告</el-col
@@ -77,54 +53,22 @@
                     ><el-button type="primary">搜尋</el-button></el-col
                 >
             </el-row>
-            <el-table :data="tableData" style="width: 100%;margin:30px 0">
-                <el-table-column prop="issue" label="期號">
-                    <template slot-scope="e">
-                        第<span style="color:red">{{ e.row.issue }}</span
-                        >期
-                    </template>
-                </el-table-column>
-                <el-table-column prop="openTime" label="開獎時間">
-                </el-table-column>
-                <el-table-column prop="openCode" label="中獎號碼">
-                </el-table-column>
-                <el-table-column label="開獎回放">
-                    <template
-                        ><el-button type="danger">直播</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <el-pagination background layout="prev, pager, next" :total="1000">
+            <el-row>
+                <el-col class="mt50" :span="8" v-for="e in 8" :key="e">
+                    <img src="@/assets/logo.png" alt="" />
+                    <div class="mt20">
+                        澳門六合彩 第<span class="red"> 2021206 </span>期
+                        開獎視頻
+                    </div>
+                </el-col>
+            </el-row>
+            <el-pagination
+                class="mt50"
+                background
+                layout="prev, pager, next"
+                :total="1000"
+            >
             </el-pagination>
-        </div>
-
-        <div v-show="type == 1" style="text-align:left">
-            <br />
-            本網站提供查詢接口，供查詢開獎數據。 <br />
-            <br />
-            地址:http://api.bjjfnet.com/data/opencode/:id<br />
-            <br />
-            方式: GET <br />
-            <br />返回: JSON <br />
-            <br />
-            <br />調用示例 澳門六合彩:<br />
-            <br />
-            http://api.bjjfnet.com/data/opencode/2032 返回示例
-            查詢澳門六合彩開獎數據 <br />
-            <br />
-            <br />{ "code": 0, "message": "Success", "data": [ { "issue":
-            "2020070", "openCode": "19,16,06,49,21,07,11", "openTime":
-            "2020-03-10 21:34:30" }, ... ] }<br /><br />
-            <br />
-            返回字段說明 <br />
-            <br />
-            1、code: 消息編碼, 0 代表成功； <br />
-            <br />
-            2、message: 消息描述； <br />
-            <br />
-            3、data：具體開獎數據；issue：期號；openCode：開獎號碼；openTime：開獎時間。
-            <br />
-            <br />
         </div>
     </div>
 </template>
@@ -135,7 +79,9 @@ export default {
     components: {},
     data() {
         return {
-            type: 0,
+            imgUrl: [
+                "https://mcjccdn-qq.goluosi.com/macaujc/pc/img/swiper1.jpg",
+            ],
             year: 0,
             tableData: [
                 {
@@ -248,5 +194,20 @@ export default {
 .el-table th {
     background-color: #eee;
     color: black;
+}
+
+.red {
+    color: red;
+}
+.mt20 {
+    margin-top: 20px;
+}
+
+.mt30 {
+    margin-top: 30px;
+}
+
+.mt50 {
+    margin-top: 50px;
 }
 </style>

@@ -35,7 +35,7 @@
                         </el-menu-item>
                     </el-col>
                     <el-col :span="4">
-                        <el-menu-item index="3" @click="$router.push('/about')">
+                        <el-menu-item index="3" @click="$router.push('/live')">
                             開獎視頻
                         </el-menu-item>
                     </el-col>
