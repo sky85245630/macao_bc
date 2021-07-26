@@ -30,7 +30,7 @@
                         </el-menu-item>
                     </el-col>
                     <el-col :span="4">
-                        <el-menu-item index="2" @click="$router.push('/about')">
+                        <el-menu-item index="2" @click="$router.push('/post')">
                             開獎公告
                         </el-menu-item>
                     </el-col>
@@ -58,6 +58,9 @@
             </el-menu>
 
             <router-view />
+            <footer>
+                <span>版權所有 不得轉載 © 2020 澳門六合彩</span>
+            </footer>
         </el-col>
     </div>
 </template>
@@ -67,7 +70,6 @@ export default {
     data() {
         return {
             activeIndex: "1",
-            activeIndex2: "1",
         };
     },
     methods: {
@@ -109,5 +111,15 @@ export default {
 
 #nav a.router-link-exact-active {
     color: #42b983;
+}
+
+footer {
+    width: 100%;
+    border-top: 5px solid #eee222;
+    padding: 20px 0;
+}
+
+.el-menu-item.is-active {
+    color: #409eff !important;
 }
 </style>
