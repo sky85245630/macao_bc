@@ -50,7 +50,10 @@
                         </el-menu-item>
                     </el-col>
                     <el-col :span="4">
-                        <el-menu-item index="6" @click="$router.push('/about')">
+                        <el-menu-item
+                            index="6"
+                            @click="$router.push('/contact')"
+                        >
                             聯繫我們
                         </el-menu-item>
                     </el-col>
