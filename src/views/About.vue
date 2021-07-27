@@ -158,7 +158,10 @@
                 </tr>
             </table>
 
-            <div class="tableStyleQ" style="text-align:left;padding:0">
+            <div
+                class="tableStyleQ"
+                style="text-align:left;padding:0;border: 0px solid #000;"
+            >
                 獎金基金是指每期攪珠的總投注額的百分之五十四。
                 餘下的百分之四十六將根據博彩稅條例分配如下：<br />
                 <div class="tab">
@@ -979,7 +982,7 @@ export default {
     components: {},
     data() {
         return {
-            type: 2,
+            type: 0,
             year: 0,
             tableData: [
                 {
@@ -1014,7 +1017,7 @@ export default {
 };
 </script>
 
-<style>
+<style scope>
 .home_box {
     margin-top: 20px;
     box-shadow: 0 1px 4px #c8c8c8;
@@ -1105,21 +1108,15 @@ export default {
 }
 
 table {
-    border: 1px solid #000;
-    font-family: 微軟正黑體;
-    font-size: 16px;
-    width: 200px;
-    border: 1px solid #000;
-    border-collapse: collapse;
 }
-th {
+.tableStyleQ th {
     padding: 10px;
     border: 1px solid #000;
     color: #000;
     text-align: left;
     font-weight: normal;
 }
-td {
+.tableStyleQ td {
     border: 1px solid #000;
     padding: 5px;
     text-align: left;
@@ -1130,6 +1127,12 @@ td {
     width: 80%;
     margin-left: 10%;
     margin-bottom: 50px;
+
+    border: 1px solid #000;
+    font-family: 微軟正黑體;
+    font-size: 16px;
+    border: 1px solid #000;
+    border-collapse: collapse;
 }
 
 .tab {
