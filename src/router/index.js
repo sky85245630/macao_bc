@@ -29,6 +29,11 @@ const routes = [
         name: "Live",
         component: () => import("../views/live.vue"),
     },
+    {
+        path: "/faq",
+        name: "FAQ",
+        component: () => import("../views/faq.vue"),
+    },
 ];
 
 const router = new VueRouter({

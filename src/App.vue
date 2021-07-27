@@ -40,7 +40,7 @@
                         </el-menu-item>
                     </el-col>
                     <el-col :span="4">
-                        <el-menu-item index="4" @click="$router.push('/about')">
+                        <el-menu-item index="4" @click="$router.push('/faq')">
                             FAQ
                         </el-menu-item>
                     </el-col>

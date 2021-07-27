@@ -98,7 +98,7 @@
             </el-pagination>
         </div>
 
-        <div v-show="type == 1" style="text-align:left">
+        <div v-show="type == 1" style="text-align:left;padding: 30px 300px;">
             <br />
             本網站提供查詢接口，供查詢開獎數據。 <br />
             <br />
