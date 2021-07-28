@@ -32,23 +32,29 @@
                             <span>
                                 <span
                                     class="ball blue"
-                                    v-for="e in draw_num.split(',')"
-                                    :key="e"
+                                    v-for="(e, index) in draw_num.split(',')"
+                                    :key="index"
                                 >
                                     <span class="balls">{{ e }}</span>
-                                    <span class="shengxiao">虎</span>
+                                    <span class="shengxiao">{{
+                                        final_list[index]
+                                    }}</span>
                                 </span>
                             </span>
                         </div>
                     </el-col>
                     <el-col :span="9">
-                        <span style="font-size:80px">05:57:30</span>
+                        <FlipClock></FlipClock>
                         <div>
                             <el-button type="warning">開獎驗證</el-button>
                             <el-button type="danger">直播</el-button>
                         </div>
                         <br />
-                        <span style="font-size:18px">開獎歷史查詢></span>
+                        <span
+                            style="font-size:18px;cursor:pointer"
+                            @click="$router.push('/post')"
+                            >開獎歷史查詢></span
+                        >
                     </el-col>
                 </el-row>
             </div>
@@ -73,9 +79,13 @@
 </template>
 
 <script>
+import FlipClock from "@/components/flipClock.vue";
+
 export default {
     name: "Home",
-    components: {},
+    components: {
+        FlipClock,
+    },
     data() {
         return {
             imgUrl: [
@@ -110,8 +120,44 @@ export default {
                 { dog: "04,16,28,40" },
                 { pig: "03,15,27,39" },
             ],
+            data_list: [
+                "鼠",
+                "牛",
+                "虎",
+                "兔",
+                "龙",
+                "蛇",
+                "马",
+                "羊",
+                "猴",
+                "鸡",
+                "狗",
+                "猪",
+            ],
+            final_list: [],
+            ball_color: [],
             draw_num: "43,41,33,42,05,13,21",
         };
+    },
+    methods: {
+        initData() {
+            // this.final_list = [
+            //     {
+            //         num: this.draw_num.split(","),
+            //         color: [],
+            //         animal: this.draw_num
+            //             .split(",")
+            //             .map((e) => this.data_list[e % 12]),
+            //     },
+            // ];
+
+            this.final_list = this.draw_num
+                .split(",")
+                .map((e) => this.data_list[e % 12]);
+        },
+    },
+    created() {
+        this.initData();
     },
 };
 </script>

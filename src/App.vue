@@ -25,7 +25,7 @@
             >
                 <el-row>
                     <el-col :span="4">
-                        <el-menu-item index="1" @click="$router.push('/')">
+                        <el-menu-item index="1" @click="$router.push('/home')">
                             首頁
                         </el-menu-item>
                     </el-col>
