@@ -70,10 +70,31 @@
             </el-table-column>
             <el-table-column prop="openTime" label="開獎時間">
             </el-table-column>
-            <el-table-column prop="openCode" label="中獎號碼">
+            <el-table-column label="中獎號碼">
+                <template slot-scope="e">
+                    <div class="num_sm">
+                        <span>
+                            <span
+                                class="ball"
+                                v-for="(q, index) in e.row.openCode.split(',')"
+                                :key="index"
+                                :class="
+                                    q.split(',').map((e) => color_list[e % 6])
+                                "
+                            >
+                                <span class="balls">{{ q }}</span>
+                                <span class="shengxiao">{{
+                                    data_list[q % 12]
+                                }}</span>
+                            </span>
+                        </span>
+                    </div>
+                </template>
             </el-table-column>
             <el-table-column label="開獎回放">
-                <template><el-button type="danger">直播</el-button> </template>
+                <template>
+                    <el-button type="danger">直播</el-button>
+                </template>
             </el-table-column>
         </el-table>
     </div>
@@ -158,7 +179,6 @@ export default {
                 .map((e) => this.data_list[e % 12]);
 
             //取得顏色
-            this.ball_color = this.color.red.split(",").find((e) => e == "02");
             this.ball_color = this.draw_num
                 .split(",")
                 .map((e) => this.color_list[e % 6]);
@@ -211,6 +231,12 @@ export default {
     display: inline-block;
 }
 
+.num_sm > span {
+    height: 40px;
+    width: 100%;
+    display: inline-block;
+}
+
 .num .balls {
     display: inline-block;
     height: 60px;
@@ -224,6 +250,19 @@ export default {
     font-weight: 600;
 }
 
+.num_sm .balls {
+    display: inline-block;
+    height: 35px;
+    width: 35px;
+    text-align: center;
+    line-height: 35px;
+    background-size: 30px;
+    background-repeat: no-repeat;
+    font-size: 12px;
+    font-weight: 600;
+    color: #000;
+}
+
 .num .ball {
     margin-right: 30px;
     position: relative;
@@ -231,6 +270,13 @@ export default {
     display: inline-block;
     height: 60px;
     width: 60px;
+}
+
+.num_sm .ball {
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    position: relative;
 }
 
 .num .ball .shengxiao {
@@ -241,16 +287,48 @@ export default {
     left: 23px;
 }
 
+.num_sm .ball .shengxiao {
+    background-color: transparent;
+    color: #414141;
+    position: relative;
+    left: 9px;
+    top: 0px;
+    font-size: 13px;
+}
 .num .blue {
-    background-image: url("../assets/ball.png");
+    background-image: url("../assets/blue.png");
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .num .red {
-    background-image: url("../assets/ball.png");
+    background-image: url("../assets/red.png");
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .num .green {
-    background-image: url("../assets/ball.png");
+    background-image: url("../assets/green.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.num_sm .blue {
+    background-image: url("../assets/blue_sm.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.num_sm .red {
+    background-image: url("../assets/red_sm.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.num_sm .green {
+    background-image: url("../assets/green_sm.png");
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .el-table th {
