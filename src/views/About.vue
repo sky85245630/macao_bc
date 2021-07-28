@@ -1107,8 +1107,6 @@ export default {
     border-top: 4px solid #d80011;
 }
 
-table {
-}
 .tableStyleQ th {
     padding: 10px;
     border: 1px solid #000;
