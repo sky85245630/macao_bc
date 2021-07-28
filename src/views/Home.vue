@@ -92,8 +92,8 @@
                 </template>
             </el-table-column>
             <el-table-column label="開獎回放">
-                <template>
-                    <el-button type="danger">直播</el-button>
+                <template slot-scope="e">
+                    <el-button type="danger" @click="asd(e)">直播</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -182,6 +182,9 @@ export default {
             this.ball_color = this.draw_num
                 .split(",")
                 .map((e) => this.color_list[e % 6]);
+        },
+        asd(e) {
+            console.log("e", e);
         },
     },
     created() {
