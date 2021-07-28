@@ -31,9 +31,10 @@
                         <div class="num">
                             <span>
                                 <span
-                                    class="ball blue"
+                                    class="ball"
                                     v-for="(e, index) in draw_num.split(',')"
                                     :key="index"
+                                    :class="ball_color[index]"
                                 >
                                     <span class="balls">{{ e }}</span>
                                     <span class="shengxiao">{{
@@ -134,6 +135,7 @@ export default {
                 "狗",
                 "猪",
             ],
+            color_list: ["red", "red", "green", "green", "blue", "blue"],
             final_list: [],
             ball_color: [],
             draw_num: "43,41,33,42,05,13,21",
@@ -150,10 +152,16 @@ export default {
             //             .map((e) => this.data_list[e % 12]),
             //     },
             // ];
-
+            //取得生肖
             this.final_list = this.draw_num
                 .split(",")
                 .map((e) => this.data_list[e % 12]);
+
+            //取得顏色
+            this.ball_color = this.color.red.split(",").find((e) => e == "02");
+            this.ball_color = this.draw_num
+                .split(",")
+                .map((e) => this.color_list[e % 6]);
         },
     },
     created() {
@@ -234,6 +242,14 @@ export default {
 }
 
 .num .blue {
+    background-image: url("../assets/ball.png");
+}
+
+.num .red {
+    background-image: url("../assets/ball.png");
+}
+
+.num .green {
     background-image: url("../assets/ball.png");
 }
 
