@@ -45,8 +45,12 @@
                         </div>
                     </el-col>
                     <el-col :span="9">
-                        <FlipClock></FlipClock>
-                        <div>
+                        <flip-countdown
+                            :deadline="endTime"
+                            :showDays="false"
+                            @timeElapsed="timeElapsedHandler"
+                        ></flip-countdown>
+                        <div style="margin-top:20px">
                             <el-button type="warning">開獎驗證</el-button>
                             <el-button type="danger">直播</el-button>
                         </div>
@@ -101,15 +105,16 @@
 </template>
 
 <script>
-import FlipClock from "@/components/flipClock.vue";
+import FlipCountdown from "vue2-flip-countdown";
 
 export default {
     name: "Home",
     components: {
-        FlipClock,
+        FlipCountdown,
     },
     data() {
         return {
+            endTime: "2021-8-12 17:25:00",
             imgUrl: [
                 "https://mcjccdn-qq.goluosi.com/macaujc/pc/img/swiper1.jpg",
                 "https://mcjccdn-qq.goluosi.com/macaujc/pc/img/swiper3.jpg",
@@ -194,6 +199,33 @@ export default {
 </script>
 
 <style>
+.flip-clock__slot {
+    display: none !important;
+}
+
+.flip-card__top,
+.flip-card__bottom,
+.flip-card__back-bottom,
+.flip-card__back::before,
+.flip-card__back::after {
+    color: #ffffff !important;
+}
+
+.flip-card__top-4digits,
+.flip-card__bottom-4digits,
+.flip-card__back-bottom-4digits,
+.flip-card__back-4digits::before,
+.flip-card__back-4digits::after {
+    color: #ffffff !important;
+}
+
+.flip-card__bottom,
+.flip-card__back-bottom,
+.flip-card__bottom-4digits,
+.flip-card__back-bottom-4digits {
+    color: #ffffff !important;
+}
+
 .home_box {
     margin-top: 20px;
     box-shadow: 0 1px 4px #c8c8c8;
