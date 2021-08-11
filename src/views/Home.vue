@@ -115,6 +115,7 @@ export default {
     watch: {
         "$store.state.kj_day": function(e) {
             // plan1.0
+            console.log("statttt", e);
             if (e) {
                 console.log("监听到kj_day");
                 this.getCurrentInfo();
@@ -177,6 +178,8 @@ export default {
             ball_color: [],
             draw_num: "43,41,33,42,05,13,21",
             currentInfo: {},
+            issueOpenInfo: {},
+            historyOpenInfo: {},
         };
     },
     methods: {
@@ -196,10 +199,36 @@ export default {
                 this.currentInfo = data;
             });
             console.log("this.$store.state.kj_day", this.$store.state.kj_day);
+            this.getIssueOpenInfo();
+            this.getHistoryOpenInfo();
         },
         getIssueOpenInfo() {
-            // let url = `${process.env.VUE_APP_BASE_DOMAI}/api/IssueOpenInfo`;
+            let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/IssueOpenInfo`;
+            let data = {
+                lottery: this.currentInfo.LotteryId,
+                is_hk: this.$store.state.kj_day,
+            };
+            console.log("getIssueOpenInfo", data);
+            this.axios.post(url, data).then((res) => {
+                let { data } = res.data;
+                this.issueOpenInfo = data;
+            });
         },
+
+        getHistoryOpenInfo() {
+            let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/HistoryOpenInfo`;
+            let data = {
+                lottery: this.currentInfo.LotteryId,
+                issueNum: 6,
+                is_hk: this.$store.state.kj_day,
+            };
+            console.log("getHistoryOpenInfo", data);
+            this.axios.post(url, data).then((res) => {
+                let { data } = res.data;
+                this.historyOpenInfo = data;
+            });
+        },
+
         timeElapsedHandler() {},
         initData() {
             //取得生肖
@@ -220,6 +249,7 @@ export default {
     mounted() {
         this.initData();
         this.getCurrentInfo();
+        // this.getIssueOpenInfo();
     },
 };
 </script>
