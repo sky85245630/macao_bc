@@ -112,6 +112,17 @@ export default {
     components: {
         FlipCountdown,
     },
+    watch: {
+        "$store.state.kj_day": function(e) {
+            // plan1.0
+            if (e) {
+                console.log("监听到kj_day");
+                this.getCurrentInfo();
+            } else {
+                this.msg = "监听不到";
+            }
+        },
+    },
     data() {
         return {
             endTime: "2021-8-12 17:25:00",
@@ -174,18 +185,20 @@ export default {
             let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/CurrentInfo`;
             // var url = "http://localhost:81/api/CurrentInfo";
             // var url = "http://localhost:81/api/is_kj_day";
-            let data = { lotteryId: 2032, is_hk: "yes" };
+            //一開始沒有抓到state資料會預設no
+            let data = { is_hk: this.$store.state.kj_day };
+            // if(!this.$store.state.kj_day){
+            // console.log(typeof this.$store.state.kj_day);
+            // }
+            // console.log("store", this.$store.state.kj_day);
             this.axios.post(url, data).then((res) => {
                 let { data } = res.data;
-                console.log("thiss", data);
                 this.currentInfo = data;
             });
+            console.log("this.$store.state.kj_day", this.$store.state.kj_day);
         },
-        is_kj_day() {
-            // var url = "http://localhost:8001/api/is_kj_day";
-            // var http = new XMLHttpRequest();
-            // http.open("POST", url);
-            // http.send();
+        getIssueOpenInfo() {
+            // let url = `${process.env.VUE_APP_BASE_DOMAI}/api/IssueOpenInfo`;
         },
         timeElapsedHandler() {},
         initData() {
@@ -203,7 +216,8 @@ export default {
             console.log("e", e);
         },
     },
-    created() {
+    created() {},
+    mounted() {
         this.initData();
         this.getCurrentInfo();
     },

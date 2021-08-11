@@ -10,16 +10,16 @@
                     </el-col>
                     <el-col :span="12">
                         <div class="date">
-                            2021-07-23 15:05 星期五<br />
+                            {{ BJSeviceTime }}<br />
                             <el-button
-                                v-if="kj_day"
-                                @click="kj_day = false"
+                                v-if="kj_day == 'yes'"
+                                @click="set_kj_day('no')"
                                 type="primary"
                                 >澳門</el-button
                             >
                             <el-button
-                                v-if="!kj_day"
-                                @click="kj_day = true"
+                                v-if="kj_day == 'no'"
+                                @click="set_kj_day('yes')"
                                 type="primary"
                                 >香港</el-button
                             >
@@ -85,7 +85,8 @@ export default {
     data() {
         return {
             activeIndex: "1",
-            kj_day: false,
+            kj_day: "",
+            BJSeviceTime: "",
         };
     },
     methods: {
@@ -95,14 +96,47 @@ export default {
         is_kj_day() {
             let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/is_kj_day`;
             this.axios.post(url).then((res) => {
-                console.log("is_kj_day", res.data);
-                this.kj_day = res.data;
+                this.kj_day = res.data.is_kj_day;
+                this.kj_day = this.kj_day == false ? "yes" : "no";
+                // console.log("is_kj_day", this.kj_day);
                 this.$store.commit("set_kj_day", this.kj_day);
+            });
+        },
+        set_kj_day(e) {
+            // console.log("set_kj_day", e);
+            this.kj_day = e;
+            this.$store.commit("set_kj_day", this.kj_day);
+        },
+        service_time() {
+            let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/ServerTime`;
+
+            window.setInterval(() => {
+                this.axios.post(url).then((res) => {
+                    console.log("service_time", res.data.data.BJSeviceTime);
+                    this.BJSeviceTime = res.data.data.BJSeviceTime;
+                    this.BJSeviceTime = this.BJSeviceTime.substring(
+                        0,
+                        this.BJSeviceTime.length - 3
+                    );
+                });
+            }, 30000);
+        },
+        current_time() {
+            let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/ServerTime`;
+            this.axios.post(url).then((res) => {
+                console.log("service_time", res.data.data.BJSeviceTime);
+                this.BJSeviceTime = res.data.data.BJSeviceTime;
+                this.BJSeviceTime = this.BJSeviceTime.substring(
+                    0,
+                    this.BJSeviceTime.length - 3
+                );
             });
         },
     },
     created() {
         this.is_kj_day();
+        this.service_time();
+        this.current_time();
     },
 };
 </script>

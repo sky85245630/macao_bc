@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        kj_day: Boolean,
+        kj_day: String,
     },
     mutations: {
         set_kj_day(state, e) {
