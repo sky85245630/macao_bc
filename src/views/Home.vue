@@ -115,7 +115,7 @@ export default {
     watch: {
         "$store.state.kj_day": function(e) {
             // plan1.0
-            console.log("statttt", e);
+            // console.log("statttt", e);
             if (e) {
                 console.log("监听到kj_day");
                 this.getCurrentInfo();
@@ -184,7 +184,7 @@ export default {
     },
     methods: {
         getCurrentInfo() {
-            console.log("env", process.env.VUE_APP_BASE_DOMAIN);
+            // console.log("env", process.env.VUE_APP_BASE_DOMAIN);
             let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/CurrentInfo`;
             // var url = "http://localhost:81/api/CurrentInfo";
             // var url = "http://localhost:81/api/is_kj_day";
@@ -198,7 +198,7 @@ export default {
                 let { data } = res.data;
                 this.currentInfo = data;
             });
-            console.log("this.$store.state.kj_day", this.$store.state.kj_day);
+            // console.log("this.$store.state.kj_day", this.$store.state.kj_day);
             this.getIssueOpenInfo();
             this.getHistoryOpenInfo();
         },
