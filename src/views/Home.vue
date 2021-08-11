@@ -165,19 +165,30 @@ export default {
             final_list: [],
             ball_color: [],
             draw_num: "43,41,33,42,05,13,21",
+            currentInfo: {},
         };
     },
     methods: {
+        getCurrentInfo() {
+            console.log("env", process.env.VUE_APP_BASE_DOMAIN);
+            let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/CurrentInfo`;
+            // var url = "http://localhost:81/api/CurrentInfo";
+            // var url = "http://localhost:81/api/is_kj_day";
+            let data = { lotteryId: 2032, is_hk: "yes" };
+            this.axios.post(url, data).then((res) => {
+                let { data } = res.data;
+                console.log("thiss", data);
+                this.currentInfo = data;
+            });
+        },
+        is_kj_day() {
+            // var url = "http://localhost:8001/api/is_kj_day";
+            // var http = new XMLHttpRequest();
+            // http.open("POST", url);
+            // http.send();
+        },
+        timeElapsedHandler() {},
         initData() {
-            // this.final_list = [
-            //     {
-            //         num: this.draw_num.split(","),
-            //         color: [],
-            //         animal: this.draw_num
-            //             .split(",")
-            //             .map((e) => this.data_list[e % 12]),
-            //     },
-            // ];
             //取得生肖
             this.final_list = this.draw_num
                 .split(",")
@@ -194,6 +205,7 @@ export default {
     },
     created() {
         this.initData();
+        this.getCurrentInfo();
     },
 };
 </script>
@@ -326,9 +338,9 @@ export default {
     background-color: transparent;
     color: #414141;
     position: relative;
-    left: 9px;
+    left: 11px;
     top: 0px;
-    font-size: 13px;
+    font-size: 14px;
 }
 .num .blue {
     background-image: url("../assets/blue.png");

@@ -1,15 +1,17 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
-})
+    state: {
+        kj_day: Boolean,
+    },
+    mutations: {
+        set_kj_day(state, e) {
+            state.kj_day = e;
+        },
+    },
+    actions: {},
+    modules: {},
+});

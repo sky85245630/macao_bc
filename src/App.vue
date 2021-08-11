@@ -10,7 +10,19 @@
                     </el-col>
                     <el-col :span="12">
                         <div class="date">
-                            2021-07-23 15:05 星期五
+                            2021-07-23 15:05 星期五<br />
+                            <el-button
+                                v-if="kj_day"
+                                @click="kj_day = false"
+                                type="primary"
+                                >澳門</el-button
+                            >
+                            <el-button
+                                v-if="!kj_day"
+                                @click="kj_day = true"
+                                type="primary"
+                                >香港</el-button
+                            >
                         </div>
                     </el-col>
                 </el-row>
@@ -73,12 +85,24 @@ export default {
     data() {
         return {
             activeIndex: "1",
+            kj_day: false,
         };
     },
     methods: {
         handleSelect(key, keyPath) {
             console.log(key, keyPath);
         },
+        is_kj_day() {
+            let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/is_kj_day`;
+            this.axios.post(url).then((res) => {
+                console.log("is_kj_day", res.data);
+                this.kj_day = res.data;
+                this.$store.commit("set_kj_day", this.kj_day);
+            });
+        },
+    },
+    created() {
+        this.is_kj_day();
     },
 };
 </script>
@@ -97,7 +121,7 @@ export default {
 
 .date {
     float: right;
-    line-height: 110px;
+    line-height: 55px;
     font-size: 18px;
     color: #a4a4a4;
 }
