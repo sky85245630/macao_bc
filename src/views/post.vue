@@ -2,56 +2,68 @@
     <div class="home" style="margin: 20px 0 ;">
         <h1 style="text-align: left;">開獎公告</h1>
         <div style="text-align: left;">
-            <el-button round :type="type == 0 ? 'danger' : ''" @click="type = 0"
-                >澳門六合彩</el-button
+            <el-button
+                round
+                :type="type == 0 ? 'danger' : ''"
+                @click="type = 0"
+                >{{ currentInfo.LotteryName }}</el-button
             >
-
             <el-button :type="type == 1 ? 'danger' : ''" round @click="type = 1"
                 >接口調用</el-button
             >
         </div>
 
         <div v-show="type == 0">
-            <div class="home_box" style="margin-bottom:30px">
-                <div style="padding:30px 20px">
+            <div class="home_box post_box">
+                <div class="" style="padding:30px 20px;">
                     <el-row class="mt-5">
                         <el-col :span="15">
                             <span style="font-weight:bold"
-                                >澳門六合彩 第<span
+                                >{{ currentInfo.LotteryName }} 第<span
                                     style="font-weight:200;color:red"
                                 >
-                                    2021203 </span
+                                    {{ currentInfo.LastIssue }} </span
                                 >期</span
                             >
 
                             <div class="num">
                                 <span>
                                     <span
-                                        class="ball blue"
-                                        v-for="e in draw_num.split(',')"
-                                        :key="e"
+                                        class="ball"
+                                        v-for="(e, index) in draw_num"
+                                        :key="index"
+                                        :class="
+                                            e
+                                                .split(',')
+                                                .map((e) => color_list[e % 6])
+                                        "
                                     >
                                         <span class="balls">{{ e }}</span>
-                                        <span class="shengxiao">虎</span>
+                                        <span class="shengxiao">{{
+                                            data_list[e % 12]
+                                        }}</span>
                                     </span>
                                 </span>
                             </div>
                         </el-col>
                         <el-col :span="9">
-                            <span style="color:red;width:100%"
-                                >2021207<span style="color:black"
-                                    >期截止時間：</span
-                                >
-                                2021-07-26 21:15:00</span
-                            ><br />
-                            <span style="font-size:80px">05:57:30</span>
+                            第<span style="color:red;width:100%"
+                                >{{ currentInfo.Issue
+                                }}<span style="color:black">期截止時間：</span>
+                                {{ currentInfo.EndTime }}</span
+                            ><br /><br />
+                            <flip-countdown
+                                :deadline="flip_endTime"
+                                :showDays="true"
+                                @timeElapsed="timeElapsedHandler"
+                            ></flip-countdown>
                         </el-col>
                     </el-row>
                 </div>
             </div>
             <el-row>
-                <el-col :span="16" style="text-align:left"
-                    >澳門六合彩 開獎公告</el-col
+                <el-col :span="14" style="text-align:left"
+                    >{{ currentInfo.LotteryName }} 開獎公告</el-col
                 >
                 <el-col :span="4"
                     ><el-button
@@ -68,34 +80,65 @@
                         >去年</el-button
                     ></el-col
                 >
-                <el-col :span="4"
+                <el-col :span="6"
                     ><el-input
-                        v-model="input"
+                        v-model="search"
                         placeholder="请输入期號"
-                        style="width: 120px;margin-right:10px"
+                        class="search_box"
                     ></el-input
-                    ><el-button type="primary">搜尋</el-button></el-col
-                >
+                    ><el-button type="primary" @click="toSearch"
+                        >搜尋</el-button
+                    >
+
+                    <el-button type="warning" @click="reset">重置</el-button>
+                </el-col>
             </el-row>
-            <el-table :data="tableData" style="width: 100%;margin:30px 0">
+            <el-table
+                :data="historyOpenInfo"
+                style="width: 100%"
+                class="home_table"
+            >
                 <el-table-column prop="issue" label="期號">
                     <template slot-scope="e">
-                        第<span style="color:red">{{ e.row.issue }}</span
+                        第<span style="color:red">{{ e.row.Issue }}</span
                         >期
                     </template>
                 </el-table-column>
-                <el-table-column prop="openTime" label="開獎時間">
+                <el-table-column prop="OpenTime" label="開獎時間">
                 </el-table-column>
-                <el-table-column prop="openCode" label="中獎號碼">
+                <el-table-column label="中獎號碼">
+                    <template slot-scope="e">
+                        <div class="num_sm">
+                            <span>
+                                <span
+                                    class="ball"
+                                    v-for="(q, index) in e.row.OpenCode.split(
+                                        ','
+                                    )"
+                                    :key="index"
+                                    :class="
+                                        q
+                                            .split(',')
+                                            .map((e) => color_list[e % 6])
+                                    "
+                                >
+                                    <span class="balls">{{ q }}</span>
+                                    <span class="shengxiao">{{
+                                        data_list[q % 12]
+                                    }}</span>
+                                </span>
+                            </span>
+                        </div>
+                    </template>
                 </el-table-column>
                 <el-table-column label="開獎回放">
-                    <template
-                        ><el-button type="danger">直播</el-button>
+                    <template slot-scope="e">
+                        <el-button type="danger" @click="asd(e)"
+                            >直播</el-button
+                        >
                     </template>
                 </el-table-column>
             </el-table>
-            <el-pagination background layout="prev, pager, next" :total="1000">
-            </el-pagination>
         </div>
 
         <div v-show="type == 1" style="text-align:left;padding: 30px 300px;">
@@ -130,123 +173,146 @@
 </template>
 
 <script>
+import FlipCountdown from "vue2-flip-countdown";
 export default {
     name: "Post",
-    components: {},
+    components: { FlipCountdown },
+    watch: {
+        "$store.state.kj_day": function(e) {
+            // plan1.0
+            // console.log("statttt", e);
+            if (e) {
+                console.log("监听到kj_day");
+                this.getCurrentInfo();
+            } else {
+                this.msg = "监听不到";
+            }
+        },
+    },
     data() {
         return {
+            // 澳門六合彩與接口調用
             type: 0,
+            //今年去年
             year: 0,
-            tableData: [
-                {
-                    issue: "2021206",
-                    openTime: "2021-07-25 21:34:05",
-                    openCode: "43,41,33,42,05,13,21",
-                    videoUrl: "",
-                },
+            //搜尋按鈕
+            search: "",
+            pagesize: 10, //设置每页显示条目个数为10
+            currentPage: 1, //设置当前页默认为1
+            filterAutomobileInfs: [], //分页前的数据
+            // tableData: [
+            //     {
+            //         issue: "2021206",
+            //         openTime: "2021-07-25 21:34:05",
+            //         openCode: "43,41,33,42,05,13,21",
+            //         videoUrl: "",
+            //     },
+            // ],
+            flip_endTime: "2021-8-14 17:25:00",
+            data_list: [
+                "鼠",
+                "牛",
+                "虎",
+                "兔",
+                "龙",
+                "蛇",
+                "马",
+                "羊",
+                "猴",
+                "鸡",
+                "狗",
+                "猪",
             ],
-            color: {
-                red: "01,02,07,08,12,13,18,19,23,24,29,30,34,35,40,45,46",
-                green: "05,06,11,16,17,21,22,27,28,32,33,38,39,43,44,49",
-                blue: "03,04,09,10,14,15,20,25,26,31,36,37,41,42,47,48",
-            },
-            animal: [
-                { mouse: "02,14,26,38" },
-                { ox: "01,13,25,37,49" },
-                { tiger: "12,24,36,48" },
-                { rabbit: "11,23,35,47" },
-                { dragon: "10,22,34,46" },
-                { snake: "09,21,33,45" },
-                { house: "08,20,32,44" },
-                { sheep: "07,19,31,43" },
-                { monkey: "06,18,30,42" },
-                { chicken: "05,17,29,41" },
-                { dog: "04,16,28,40" },
-                { pig: "03,15,27,39" },
-            ],
-            draw_num: "43,41,33,42,05,13,21",
+            color_list: ["red", "red", "green", "green", "blue", "blue"],
+            draw_num: "",
+            currentInfo: {},
+            issueOpenInfo: {},
+            historyOpenInfo: [],
+            searchHistoryOpenInfo: [],
         };
+    },
+    methods: {
+        getCurrentInfo() {
+            // console.log("env", process.env.VUE_APP_BASE_DOMAIN);
+            let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/CurrentInfo`;
+            // var url = "http://localhost:81/api/CurrentInfo";
+            // var url = "http://localhost:81/api/is_kj_day";
+            //一開始沒有抓到state資料會預設no
+            let data = { is_hk: this.$store.state.kj_day };
+            // if(!this.$store.state.kj_day){
+            // console.log(typeof this.$store.state.kj_day);
+            // }
+            // console.log("store", this.$store.state.kj_day);
+            this.axios.post(url, data).then((res) => {
+                let { data } = res.data;
+                this.currentInfo = data;
+            });
+            // console.log("this.$store.state.kj_day", this.$store.state.kj_day);
+            this.getIssueOpenInfo();
+            this.getHistoryOpenInfo();
+        },
+        getIssueOpenInfo() {
+            let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/IssueOpenInfo`;
+            let data = {
+                lottery: this.currentInfo.LotteryId,
+                is_hk: this.$store.state.kj_day,
+            };
+            // console.log("getIssueOpenInfo", data);
+            this.axios.post(url, data).then((res) => {
+                let { data } = res.data;
+                this.issueOpenInfo = data;
+                this.initData();
+            });
+        },
+        getHistoryOpenInfo() {
+            let today = new Date();
+            today.toISOString().substring(0, 10);
+            let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/HistoryOpenInfoList`;
+            let data = {
+                lottery: this.currentInfo.LotteryId,
+                issueNum: today,
+                is_hk: this.$store.state.kj_day,
+            };
+            console.log("getHistoryOpenInfo", data);
+            this.axios.post(url, data).then((res) => {
+                let { data } = res.data;
+                this.historyOpenInfo = data;
+                this.searchHistoryOpenInfo = data;
+                this.total = this.historyOpenInfo.length;
+            });
+        },
+        timeElapsedHandler() {},
+        initData() {
+            console.log("initData", this.issueOpenInfo);
+            this.draw_num = this.issueOpenInfo.OpenCode.split(",");
+        },
+        toSearch() {
+            // this.getHistoryOpenInfo();
+            this.historyOpenInfo = this.searchHistoryOpenInfo.filter((e) => {
+                return e.Issue.includes(this.search);
+            });
+            // console.log("search", this.historyOpenInfo.search(this.search));
+        },
+        reset() {
+            this.historyOpenInfo = this.searchHistoryOpenInfo;
+        },
+    },
+    mounted() {
+        // this.initData();
+        this.getCurrentInfo();
+        // this.getIssueOpenInfo();
     },
 };
 </script>
 
 <style>
-.home_box {
-    margin-top: 20px;
-    box-shadow: 0 1px 4px #c8c8c8;
-    border: 1px solid #dadada;
-    border-radius: 4px;
-    background-color: #fff;
+.post_box {
+    padding: 30px 20px 60px;
+    margin-bottom: 30px;
 }
 
-.box_title .nextTime {
-    font-size: 14px;
-    float: right;
-}
-
-.box_title .title {
-    font-size: 20px;
-    float: left;
-}
-.box_title {
-    height: 40px;
-    line-height: 40px;
-    padding: 0 20px;
-}
-.amlhc {
-    background-color: #ffc9c9;
-    border: 1px solid #d80011;
-    color: #d80011;
-}
-
-.num {
-    height: 60px;
-    padding-left: 20px;
-    margin-top: 40px;
-}
-
-.num > span {
-    height: 60px;
-    width: 100%;
-    display: inline-block;
-}
-
-.num .balls {
-    display: inline-block;
-    height: 60px;
-    width: 60px;
-    text-align: center;
-    line-height: 56px;
-    background-position: -6px -5px;
-    background-size: 70px;
-    background-repeat: no-repeat;
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.num .ball {
-    margin-right: 30px;
-    position: relative;
-    text-align: center;
-    display: inline-block;
-    height: 60px;
-    width: 60px;
-}
-
-.num .ball .shengxiao {
-    color: #515151;
-    font-size: 15px;
-    position: absolute;
-    top: 70px;
-    left: 23px;
-}
-
-.num .blue {
-    background-image: url("../assets/ball.png");
-}
-
-.el-table th {
-    background-color: #eee;
-    color: black;
+.search_box {
+    width: 120px;
+    margin-right: 10px;
 }
 </style>

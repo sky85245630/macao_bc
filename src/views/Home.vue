@@ -136,7 +136,7 @@ export default {
     },
     data() {
         return {
-            flip_endTime: "2021-8-12 17:25:00",
+            flip_endTime: "2021-8-14 17:25:00",
             imgUrl: [
                 "https://mcjccdn-qq.goluosi.com/macaujc/pc/img/swiper1.jpg",
                 "https://mcjccdn-qq.goluosi.com/macaujc/pc/img/swiper3.jpg",
@@ -196,7 +196,6 @@ export default {
                 this.initData();
             });
         },
-
         getHistoryOpenInfo() {
             let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/HistoryOpenInfo`;
             let data = {
