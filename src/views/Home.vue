@@ -12,19 +12,21 @@
 
         <div class="home_box" style="margin-bottom:30px">
             <div class="box_title amlhc">
-                <span class="title">澳門六合彩</span>
+                <span class="title">{{ currentInfo.LotteryName }}</span>
                 <span class="nextTime"
-                    >第2021204期截止時間：2021-07-23 21:15:00</span
+                    >第{{ currentInfo.Issue }}期截止時間：{{
+                        currentInfo.EndTime
+                    }}</span
                 >
             </div>
             <div style="padding:30px 20px">
                 <el-row class="mt-5">
                     <el-col :span="15">
                         <span style="font-weight:bold"
-                            >澳門六合彩 第<span
+                            >{{ currentInfo.LotteryName }} 第<span
                                 style="font-weight:200;color:red"
                             >
-                                2021203 </span
+                                {{ currentInfo.LastIssue }} </span
                             >期</span
                         >
 
@@ -32,13 +34,17 @@
                             <span>
                                 <span
                                     class="ball"
-                                    v-for="(e, index) in draw_num.split(',')"
+                                    v-for="(e, index) in draw_num"
                                     :key="index"
-                                    :class="ball_color[index]"
+                                    :class="
+                                        e
+                                            .split(',')
+                                            .map((e) => color_list[e % 6])
+                                    "
                                 >
                                     <span class="balls">{{ e }}</span>
                                     <span class="shengxiao">{{
-                                        final_list[index]
+                                        data_list[e % 12]
                                     }}</span>
                                 </span>
                             </span>
@@ -46,8 +52,8 @@
                     </el-col>
                     <el-col :span="9">
                         <flip-countdown
-                            :deadline="endTime"
-                            :showDays="false"
+                            :deadline="flip_endTime"
+                            :showDays="true"
                             @timeElapsed="timeElapsedHandler"
                         ></flip-countdown>
                         <div style="margin-top:20px">
@@ -65,14 +71,18 @@
             </div>
         </div>
 
-        <el-table :data="tableData" style="width: 100%">
+        <el-table
+            :data="historyOpenInfo"
+            style="width: 100%"
+            class="home_table"
+        >
             <el-table-column prop="issue" label="期號">
                 <template slot-scope="e">
-                    第<span style="color:red">{{ e.row.issue }}</span
+                    第<span style="color:red">{{ e.row.Issue }}</span
                     >期
                 </template>
             </el-table-column>
-            <el-table-column prop="openTime" label="開獎時間">
+            <el-table-column prop="OpenTime" label="開獎時間">
             </el-table-column>
             <el-table-column label="中獎號碼">
                 <template slot-scope="e">
@@ -80,7 +90,7 @@
                         <span>
                             <span
                                 class="ball"
-                                v-for="(q, index) in e.row.openCode.split(',')"
+                                v-for="(q, index) in e.row.OpenCode.split(',')"
                                 :key="index"
                                 :class="
                                     q.split(',').map((e) => color_list[e % 6])
@@ -126,38 +136,11 @@ export default {
     },
     data() {
         return {
-            endTime: "2021-8-12 17:25:00",
+            flip_endTime: "2021-8-12 17:25:00",
             imgUrl: [
                 "https://mcjccdn-qq.goluosi.com/macaujc/pc/img/swiper1.jpg",
                 "https://mcjccdn-qq.goluosi.com/macaujc/pc/img/swiper3.jpg",
                 "https://mcjccdn-qq.goluosi.com/macaujc/pc/img/swiper4.jpg",
-            ],
-            tableData: [
-                {
-                    issue: "2021206",
-                    openTime: "2021-07-25 21:34:05",
-                    openCode: "43,41,33,42,05,13,21",
-                    videoUrl: "",
-                },
-            ],
-            color: {
-                red: "01,02,07,08,12,13,18,19,23,24,29,30,34,35,40,45,46",
-                green: "05,06,11,16,17,21,22,27,28,32,33,38,39,43,44,49",
-                blue: "03,04,09,10,14,15,20,25,26,31,36,37,41,42,47,48",
-            },
-            animal: [
-                { mouse: "02,14,26,38" },
-                { ox: "01,13,25,37,49" },
-                { tiger: "12,24,36,48" },
-                { rabbit: "11,23,35,47" },
-                { dragon: "10,22,34,46" },
-                { snake: "09,21,33,45" },
-                { house: "08,20,32,44" },
-                { sheep: "07,19,31,43" },
-                { monkey: "06,18,30,42" },
-                { chicken: "05,17,29,41" },
-                { dog: "04,16,28,40" },
-                { pig: "03,15,27,39" },
             ],
             data_list: [
                 "鼠",
@@ -174,12 +157,10 @@ export default {
                 "猪",
             ],
             color_list: ["red", "red", "green", "green", "blue", "blue"],
-            final_list: [],
-            ball_color: [],
-            draw_num: "43,41,33,42,05,13,21",
+            draw_num: "",
             currentInfo: {},
             issueOpenInfo: {},
-            historyOpenInfo: {},
+            historyOpenInfo: [],
         };
     },
     methods: {
@@ -208,10 +189,11 @@ export default {
                 lottery: this.currentInfo.LotteryId,
                 is_hk: this.$store.state.kj_day,
             };
-            console.log("getIssueOpenInfo", data);
+            // console.log("getIssueOpenInfo", data);
             this.axios.post(url, data).then((res) => {
                 let { data } = res.data;
                 this.issueOpenInfo = data;
+                this.initData();
             });
         },
 
@@ -222,7 +204,7 @@ export default {
                 issueNum: 6,
                 is_hk: this.$store.state.kj_day,
             };
-            console.log("getHistoryOpenInfo", data);
+            // console.log("getHistoryOpenInfo", data);
             this.axios.post(url, data).then((res) => {
                 let { data } = res.data;
                 this.historyOpenInfo = data;
@@ -231,15 +213,8 @@ export default {
 
         timeElapsedHandler() {},
         initData() {
-            //取得生肖
-            this.final_list = this.draw_num
-                .split(",")
-                .map((e) => this.data_list[e % 12]);
-
-            //取得顏色
-            this.ball_color = this.draw_num
-                .split(",")
-                .map((e) => this.color_list[e % 6]);
+            console.log("initData", this.issueOpenInfo);
+            this.draw_num = this.issueOpenInfo.OpenCode.split(",");
         },
         asd(e) {
             console.log("e", e);
@@ -247,7 +222,7 @@ export default {
     },
     created() {},
     mounted() {
-        this.initData();
+        // this.initData();
         this.getCurrentInfo();
         // this.getIssueOpenInfo();
     },
@@ -382,7 +357,7 @@ export default {
     background-color: transparent;
     color: #414141;
     position: relative;
-    left: 11px;
+    left: 1px;
     top: 0px;
     font-size: 14px;
 }
@@ -425,5 +400,10 @@ export default {
 .el-table th {
     background-color: #eee;
     color: black;
+}
+
+.home_table th,
+.home_table td {
+    text-align: center !important;
 }
 </style>

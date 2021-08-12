@@ -112,7 +112,7 @@ export default {
 
             window.setInterval(() => {
                 this.axios.post(url).then((res) => {
-                    console.log("service_time", res.data.data.BJSeviceTime);
+                    // console.log("service_time", res.data.data.BJSeviceTime);
                     this.BJSeviceTime = res.data.data.BJSeviceTime;
                     this.BJSeviceTime = this.BJSeviceTime.substring(
                         0,
@@ -124,7 +124,7 @@ export default {
         current_time() {
             let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/ServerTime`;
             this.axios.post(url).then((res) => {
-                console.log("service_time", res.data.data.BJSeviceTime);
+                // console.log("service_time", res.data.data.BJSeviceTime);
                 this.BJSeviceTime = res.data.data.BJSeviceTime;
                 this.BJSeviceTime = this.BJSeviceTime.substring(
                     0,
