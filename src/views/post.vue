@@ -69,14 +69,14 @@
                     ><el-button
                         round
                         :type="year == 0 ? 'danger' : ''"
-                        @click="year = 0"
+                        @click="getHistoryOpenInfo(0)"
                         >今年</el-button
                     >
 
                     <el-button
                         :type="year == 1 ? 'danger' : ''"
                         round
-                        @click="year = 1"
+                        @click="getHistoryOpenInfo(1)"
                         >去年</el-button
                     ></el-col
                 >
@@ -264,16 +264,25 @@ export default {
                 this.initData();
             });
         },
-        getHistoryOpenInfo() {
+        getHistoryOpenInfo(e) {
             let today = new Date();
-            today.toISOString().substring(0, 10);
+            // 今年
+            if (e == 0) {
+                this.year = 0;
+                today = today.toISOString().substring(0, 10);
+            }
+            //去年
+            if (e == 1) {
+                this.year = 1;
+                today = today.toISOString().substring(0, 4) - 1 + "-12-31";
+            }
             let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/HistoryOpenInfoList`;
             let data = {
                 lottery: this.currentInfo.LotteryId,
                 issueNum: today,
                 is_hk: this.$store.state.kj_day,
             };
-            console.log("getHistoryOpenInfo", data);
+            // console.log("getHistoryOpenInfo", data);
             this.axios.post(url, data).then((res) => {
                 let { data } = res.data;
                 this.historyOpenInfo = data;
