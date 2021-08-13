@@ -107,10 +107,61 @@
             </el-table-column>
             <el-table-column label="開獎回放">
                 <template slot-scope="e">
-                    <el-button type="danger" @click="asd(e)">直播</el-button>
+                    <el-button type="danger" @click="toPlay(e)">回放</el-button>
                 </template>
             </el-table-column>
         </el-table>
+
+        <el-dialog
+            :title="currentInfo.LotteryName + ' 第' + toPlayData.Issue + '期'"
+            :visible.sync="dialogVisible"
+            width="70%"
+            class="home_left"
+        >
+            <el-row style="text-align: center;">
+                <el-col :span="12">
+                    <span class="fz16"
+                        >開獎時間：{{ toPlayData.OpenTime }}</span
+                    >
+                </el-col>
+                <el-col :span="12" style="padding: 0 50px;">
+                    <span class="toPlay_kj fz16">開獎號碼：</span>
+                    <div
+                        class="num_sm"
+                        style="position: absolute;top: -50%;right: 15%;"
+                    >
+                        <span>
+                            <span
+                                class="ball"
+                                v-for="(q, index) in toPlayData.OpenCode.split(
+                                    ','
+                                )"
+                                :key="index"
+                                :class="
+                                    q.split(',').map((e) => color_list[e % 6])
+                                "
+                            >
+                                <span class="balls">{{ q }}</span>
+                                <span class="shengxiao">{{
+                                    data_list[q % 12]
+                                }}</span>
+                            </span>
+                        </span>
+                    </div>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24" class="mt50">
+                    <video
+                        width="100%"
+                        height="100%"
+                        controls
+                        :src="require('@/video/2021067.mp4')"
+                    ></video>
+                </el-col>
+            </el-row>
+        </el-dialog>
     </div>
 </template>
 
@@ -136,6 +187,7 @@ export default {
     },
     data() {
         return {
+            video: "@/video/2021063.mp4",
             flip_endTime: "2021-8-14 17:25:00",
             imgUrl: [
                 "https://mcjccdn-qq.goluosi.com/macaujc/pc/img/swiper1.jpg",
@@ -161,6 +213,15 @@ export default {
             currentInfo: {},
             issueOpenInfo: {},
             historyOpenInfo: [],
+            dialogVisible: false,
+            toPlayData: {
+                Issue: "2021067",
+                LotteryId: 2032,
+                OpenCode: "44,13,26,34,35,14,12",
+                OpenTime: "2021-08-07 21:30:00",
+                Pet: "牛",
+                VideoUrl: "/video/2021067.mp4",
+            },
         };
     },
     methods: {
@@ -215,8 +276,15 @@ export default {
             console.log("initData", this.issueOpenInfo);
             this.draw_num = this.issueOpenInfo.OpenCode.split(",");
         },
-        asd(e) {
+        toPlay(e) {
             console.log("e", e);
+            this.dialogVisible = true;
+            this.toPlayData = e.row;
+            this.video = "@" + e.row.VideoUrl;
+
+            // :src="require(`@${toPlayData.VideoUrl}`)"
+
+            // :src="require('@/video/2021067.mp4')"
         },
     },
     created() {},
@@ -404,5 +472,22 @@ export default {
 .home_table th,
 .home_table td {
     text-align: center !important;
+}
+
+.home_left {
+    text-align: left;
+}
+
+.toPlay_kj {
+    text-align: left;
+    display: block;
+}
+
+.fz16 {
+    font-size: 16px;
+}
+
+.mt50 {
+    margin-top: 50px;
 }
 </style>
