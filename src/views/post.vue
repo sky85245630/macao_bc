@@ -287,7 +287,6 @@ export default {
                 let { data } = res.data;
                 this.historyOpenInfo = data;
                 this.searchHistoryOpenInfo = data;
-                this.total = this.historyOpenInfo.length;
             });
         },
         timeElapsedHandler() {},
