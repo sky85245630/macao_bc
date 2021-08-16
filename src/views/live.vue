@@ -81,7 +81,12 @@
                     v-for="(e, index) in historyOpenInfo"
                     :key="index"
                 >
-                    <img src="@/assets/logo.png" alt="" @click="toPlay(e)" />
+                    <img
+                        class="pointer"
+                        src="@/assets/logo.png"
+                        alt=""
+                        @click="toPlay(e)"
+                    />
                     <div class="mt20">
                         {{ currentInfo.LotteryName }} 第<span class="span_red">
                             {{ e.Issue }} </span
@@ -498,6 +503,15 @@ export default {
 
 .mt50 {
     margin-top: 50px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.search_box {
+    width: 120px;
+    margin-right: 10px;
 }
 </style>
 
