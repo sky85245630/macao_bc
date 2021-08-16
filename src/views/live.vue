@@ -13,110 +13,332 @@
         </el-row>
 
         <div style="text-align: left;">
-            <el-button type="danger" round>澳門六合彩</el-button>
+            <el-button type="danger" round>{{
+                currentInfo.LotteryName
+            }}</el-button>
         </div>
 
         <div class="mt30">
-            <el-carousel height="423px">
-                <el-carousel-item v-for="item in imgUrl" :key="item">
-                    <img :src="item" alt="" style="width:100%" />
-                </el-carousel-item>
-            </el-carousel>
+            <video
+                id="my-video"
+                class="video-js vjs-default-skin"
+                controls
+                muted
+                preload="none"
+            >
+                <source
+                    src="https://bbb.jutianx.com/kkk/bbb.m3u8"
+                    type="application/x-mpegURL"
+                />
+            </video>
+
+            <!-- <video
+                ref="videoPlayer"
+                class="video-js vjs-default-skin"
+                style="width: 100%; height: 100%; object-fit: fill"
+            ></video> -->
         </div>
 
         <div class="mt30">
             <el-row>
-                <el-col :span="16" style="text-align:left"
-                    >澳門六合彩 開獎公告</el-col
+                <el-col :span="14" style="text-align:left"
+                    >{{ currentInfo.LotteryName }} 開獎公告</el-col
                 >
                 <el-col :span="4"
                     ><el-button
                         round
                         :type="year == 0 ? 'danger' : ''"
-                        @click="year = 0"
+                        @click="getHistoryOpenInfo(0)"
                         >今年</el-button
                     >
 
                     <el-button
                         :type="year == 1 ? 'danger' : ''"
                         round
-                        @click="year = 1"
+                        @click="getHistoryOpenInfo(1)"
                         >去年</el-button
                     ></el-col
                 >
-                <el-col :span="4"
+                <el-col :span="6"
                     ><el-input
-                        v-model="input"
+                        v-model="search"
                         placeholder="请输入期號"
-                        style="width: 120px;margin-right:10px"
+                        class="search_box"
                     ></el-input
-                    ><el-button type="primary">搜尋</el-button></el-col
+                    ><el-button type="primary" @click="toSearch"
+                        >搜尋</el-button
+                    >
+
+                    <el-button type="warning" @click="reset"
+                        >重置</el-button
+                    ></el-col
                 >
             </el-row>
             <el-row>
-                <el-col class="mt50" :span="8" v-for="e in 8" :key="e">
-                    <img src="@/assets/logo.png" alt="" />
+                <el-col
+                    class="mt50"
+                    :span="8"
+                    v-for="(e, index) in historyOpenInfo"
+                    :key="index"
+                >
+                    <img src="@/assets/logo.png" alt="" @click="toPlay(e)" />
                     <div class="mt20">
-                        澳門六合彩 第<span class="red"> 2021206 </span>期
-                        開獎視頻
+                        {{ currentInfo.LotteryName }} 第<span class="span_red">
+                            {{ e.Issue }} </span
+                        >期 開獎視頻
                     </div>
                 </el-col>
             </el-row>
-            <el-pagination
+            <!-- <el-pagination
                 class="mt50"
                 background
                 layout="prev, pager, next"
                 :total="1000"
             >
-            </el-pagination>
+            </el-pagination> -->
+            <el-dialog
+                :title="
+                    currentInfo.LotteryName + ' 第' + toPlayData.Issue + '期'
+                "
+                :visible.sync="dialogVisible"
+                width="70%"
+                top="5vh"
+                class="home_left"
+            >
+                <el-row style="text-align: center;">
+                    <el-col :span="12">
+                        <span class="fz16"
+                            >開獎時間：{{ toPlayData.OpenTime }}</span
+                        >
+                    </el-col>
+                    <el-col :span="12" style="padding: 0 50px;">
+                        <span class="toPlay_kj fz16">開獎號碼：</span>
+                        <div
+                            class="num_sm"
+                            style="position: absolute;top: -50%;right: 15%;"
+                        >
+                            <span>
+                                <span
+                                    class="ball"
+                                    v-for="(q,
+                                    index) in toPlayData.OpenCode.split(',')"
+                                    :key="index"
+                                    :class="
+                                        q
+                                            .split(',')
+                                            .map((e) => color_list[e % 6])
+                                    "
+                                >
+                                    <span class="balls">{{ q }}</span>
+                                    <span class="shengxiao">{{
+                                        data_list[q % 12]
+                                    }}</span>
+                                </span>
+                            </span>
+                        </div>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24" class="mt50">
+                        <video
+                            width="100%"
+                            height="100%"
+                            controls
+                            :src="require('@/video/2021067.mp4')"
+                        ></video>
+                    </el-col>
+                </el-row>
+            </el-dialog>
         </div>
     </div>
 </template>
 
 <script>
+import videojs from "video.js";
+import "videojs-contrib-hls";
+// Vue.prototype.$video = Video;
+
 export default {
-    name: "Post",
+    name: "Live",
     components: {},
+    watch: {
+        "$store.state.kj_day": function(e) {
+            // plan1.0
+            // console.log("statttt", e);
+            if (e) {
+                console.log("监听到kj_day");
+                this.getCurrentInfo();
+            } else {
+                this.msg = "监听不到";
+            }
+        },
+    },
     data() {
         return {
-            imgUrl: [
-                "https://mcjccdn-qq.goluosi.com/macaujc/pc/img/swiper1.jpg",
-            ],
+            search: "",
             year: 0,
-            tableData: [
-                {
-                    issue: "2021206",
-                    openTime: "2021-07-25 21:34:05",
-                    openCode: "43,41,33,42,05,13,21",
-                    videoUrl: "",
-                },
+            data_list: [
+                "鼠",
+                "牛",
+                "虎",
+                "兔",
+                "龙",
+                "蛇",
+                "马",
+                "羊",
+                "猴",
+                "鸡",
+                "狗",
+                "猪",
             ],
-            color: {
-                red: "01,02,07,08,12,13,18,19,23,24,29,30,34,35,40,45,46",
-                green: "05,06,11,16,17,21,22,27,28,32,33,38,39,43,44,49",
-                blue: "03,04,09,10,14,15,20,25,26,31,36,37,41,42,47,48",
+            color_list: ["red", "red", "green", "green", "blue", "blue"],
+            draw_num: "",
+            currentInfo: {},
+            issueOpenInfo: {},
+            historyOpenInfo: [],
+            dialogVisible: false,
+            toPlayData: {
+                Issue: "2021067",
+                LotteryId: 2032,
+                OpenCode: "44,13,26,34,35,14,12",
+                OpenTime: "2021-08-07 21:30:00",
+                Pet: "牛",
+                VideoUrl: "/video/2021067.mp4",
             },
-            animal: [
-                { mouse: "02,14,26,38" },
-                { ox: "01,13,25,37,49" },
-                { tiger: "12,24,36,48" },
-                { rabbit: "11,23,35,47" },
-                { dragon: "10,22,34,46" },
-                { snake: "09,21,33,45" },
-                { house: "08,20,32,44" },
-                { sheep: "07,19,31,43" },
-                { monkey: "06,18,30,42" },
-                { chicken: "05,17,29,41" },
-                { dog: "04,16,28,40" },
-                { pig: "03,15,27,39" },
-            ],
-            draw_num: "43,41,33,42,05,13,21",
         };
+    },
+    methods: {
+        initVideo() {
+            videojs(
+                "my-video",
+                {
+                    bigPlayButton: false,
+                    textTrackDisplay: false,
+                    posterImage: true,
+                    errorDisplay: false,
+                    controlBar: true,
+                    hls: {
+                        withCredentials: true,
+                    },
+                },
+                function() {
+                    this.play();
+                }
+            );
+        },
+        destroyVideo() {
+            videojs(
+                "my-video",
+                {
+                    bigPlayButton: false,
+                    textTrackDisplay: false,
+                    posterImage: true,
+                    errorDisplay: false,
+                    controlBar: true,
+                    hls: {
+                        withCredentials: true,
+                    },
+                },
+                function() {
+                    this.dispose();
+                }
+            );
+        },
+        getCurrentInfo() {
+            // console.log("env", process.env.VUE_APP_BASE_DOMAIN);
+            let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/CurrentInfo`;
+            // var url = "http://localhost:81/api/CurrentInfo";
+            // var url = "http://localhost:81/api/is_kj_day";
+            //一開始沒有抓到state資料會預設no
+            let data = { is_hk: this.$store.state.kj_day };
+            // if(!this.$store.state.kj_day){
+            // console.log(typeof this.$store.state.kj_day);
+            // }
+            // console.log("store", this.$store.state.kj_day);
+            this.axios.post(url, data).then((res) => {
+                let { data } = res.data;
+                this.currentInfo = data;
+            });
+            // console.log("this.$store.state.kj_day", this.$store.state.kj_day);
+            this.getIssueOpenInfo();
+            this.getHistoryOpenInfo();
+        },
+        getIssueOpenInfo() {
+            let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/IssueOpenInfo`;
+            let data = {
+                lottery: this.currentInfo.LotteryId,
+                is_hk: this.$store.state.kj_day,
+            };
+            // console.log("getIssueOpenInfo", data);
+            this.axios.post(url, data).then((res) => {
+                let { data } = res.data;
+                this.issueOpenInfo = data;
+                this.initData();
+            });
+        },
+        getHistoryOpenInfo(e) {
+            let today = new Date();
+            // 今年
+            if (e == 0) {
+                this.year = 0;
+                today = today.toISOString().substring(0, 10);
+            }
+            //去年
+            if (e == 1) {
+                this.year = 1;
+                today = today.toISOString().substring(0, 4) - 1 + "-12-31";
+            }
+            let url = `${process.env.VUE_APP_BASE_DOMAIN}/api/HistoryOpenInfoList`;
+            let data = {
+                lottery: this.currentInfo.LotteryId,
+                issueNum: today,
+                is_hk: this.$store.state.kj_day,
+            };
+            // console.log("getHistoryOpenInfo", data);
+            this.axios.post(url, data).then((res) => {
+                let { data } = res.data;
+                this.historyOpenInfo = data;
+                this.searchHistoryOpenInfo = data;
+            });
+        },
+        timeElapsedHandler() {},
+        initData() {
+            // console.log("initData", this.issueOpenInfo);
+            this.draw_num = this.issueOpenInfo.OpenCode.split(",");
+        },
+        toSearch() {
+            // this.getHistoryOpenInfo();
+            this.historyOpenInfo = this.searchHistoryOpenInfo.filter((e) => {
+                return e.Issue.includes(this.search);
+            });
+            // console.log("search", this.historyOpenInfo.search(this.search));
+        },
+        reset() {
+            this.historyOpenInfo = this.searchHistoryOpenInfo;
+        },
+        toPlay(e) {
+            console.log("e", e);
+            this.dialogVisible = true;
+            this.toPlayData = e;
+            // this.video = "@" + e.row.VideoUrl;
+
+            // :src="require(`@${toPlayData.VideoUrl}`)"
+
+            // :src="require('@/video/2021067.mp4')"
+        },
+    },
+    mounted() {
+        this.getCurrentInfo();
+        this.initVideo();
+    },
+    beforeDestroy() {
+        this.destroyVideo();
     },
 };
 </script>
 
-<style>
+<style scoped>
 .home_box {
     margin-top: 20px;
     box-shadow: 0 1px 4px #c8c8c8;
@@ -157,6 +379,12 @@ export default {
     display: inline-block;
 }
 
+.num_sm > span {
+    height: 40px;
+    width: 100%;
+    display: inline-block;
+}
+
 .num .balls {
     display: inline-block;
     height: 60px;
@@ -170,6 +398,19 @@ export default {
     font-weight: 600;
 }
 
+.num_sm .balls {
+    display: inline-block;
+    height: 35px;
+    width: 35px;
+    text-align: center;
+    line-height: 35px;
+    background-size: 30px;
+    background-repeat: no-repeat;
+    font-size: 12px;
+    font-weight: 600;
+    color: #000;
+}
+
 .num .ball {
     margin-right: 30px;
     position: relative;
@@ -177,6 +418,13 @@ export default {
     display: inline-block;
     height: 60px;
     width: 60px;
+}
+
+.num_sm .ball {
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    position: relative;
 }
 
 .num .ball .shengxiao {
@@ -187,8 +435,48 @@ export default {
     left: 23px;
 }
 
+.num_sm .ball .shengxiao {
+    background-color: transparent;
+    color: #414141;
+    position: relative;
+    left: 1px;
+    top: 0px;
+    font-size: 14px;
+}
 .num .blue {
-    background-image: url("../assets/ball.png");
+    background-image: url("../assets/blue.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.num .red {
+    background-image: url("../assets/red.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.num .green {
+    background-image: url("../assets/green.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.num_sm .blue {
+    background-image: url("../assets/blue_sm.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.num_sm .red {
+    background-image: url("../assets/red_sm.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.num_sm .green {
+    background-image: url("../assets/green_sm.png");
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .el-table th {
@@ -196,7 +484,7 @@ export default {
     color: black;
 }
 
-.red {
+.span_red {
     color: red;
 }
 .mt20 {
@@ -209,5 +497,12 @@ export default {
 
 .mt50 {
     margin-top: 50px;
+}
+</style>
+
+<style>
+.video-js[tabindex="-1"] {
+    outline: none;
+    width: 100%;
 }
 </style>

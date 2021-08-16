@@ -95,7 +95,7 @@
             </el-row>
             <el-table
                 :data="historyOpenInfo"
-                style="width: 100%"
+                style="width: 100%;margin-top:30px"
                 class="home_table"
             >
                 <el-table-column prop="issue" label="期號">
@@ -133,12 +133,67 @@
                 </el-table-column>
                 <el-table-column label="開獎回放">
                     <template slot-scope="e">
-                        <el-button type="danger" @click="asd(e)"
+                        <el-button type="danger" @click="toPlay(e)"
                             >直播</el-button
                         >
                     </template>
                 </el-table-column>
             </el-table>
+
+            <el-dialog
+                :title="
+                    currentInfo.LotteryName + ' 第' + toPlayData.Issue + '期'
+                "
+                :visible.sync="dialogVisible"
+                width="70%"
+                top="5vh"
+                class="home_left"
+            >
+                <el-row style="text-align: center;">
+                    <el-col :span="12">
+                        <span class="fz16"
+                            >開獎時間：{{ toPlayData.OpenTime }}</span
+                        >
+                    </el-col>
+                    <el-col :span="12" style="padding: 0 50px;">
+                        <span class="toPlay_kj fz16">開獎號碼：</span>
+                        <div
+                            class="num_sm"
+                            style="position: absolute;top: -50%;right: 15%;"
+                        >
+                            <span>
+                                <span
+                                    class="ball"
+                                    v-for="(q,
+                                    index) in toPlayData.OpenCode.split(',')"
+                                    :key="index"
+                                    :class="
+                                        q
+                                            .split(',')
+                                            .map((e) => color_list[e % 6])
+                                    "
+                                >
+                                    <span class="balls">{{ q }}</span>
+                                    <span class="shengxiao">{{
+                                        data_list[q % 12]
+                                    }}</span>
+                                </span>
+                            </span>
+                        </div>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24" class="mt50">
+                        <video
+                            width="100%"
+                            height="100%"
+                            controls
+                            :src="require('@/video/2021067.mp4')"
+                        ></video>
+                    </el-col>
+                </el-row>
+            </el-dialog>
         </div>
 
         <div v-show="type == 1" style="text-align:left;padding: 30px 300px;">
@@ -174,6 +229,7 @@
 
 <script>
 import FlipCountdown from "vue2-flip-countdown";
+
 export default {
     name: "Post",
     components: { FlipCountdown },
@@ -200,6 +256,7 @@ export default {
             pagesize: 10, //设置每页显示条目个数为10
             currentPage: 1, //设置当前页默认为1
             filterAutomobileInfs: [], //分页前的数据
+            dialogVisible: false,
             // tableData: [
             //     {
             //         issue: "2021206",
@@ -229,6 +286,14 @@ export default {
             issueOpenInfo: {},
             historyOpenInfo: [],
             searchHistoryOpenInfo: [],
+            toPlayData: {
+                Issue: "2021067",
+                LotteryId: 2032,
+                OpenCode: "44,13,26,34,35,14,12",
+                OpenTime: "2021-08-07 21:30:00",
+                Pet: "牛",
+                VideoUrl: "/video/2021067.mp4",
+            },
         };
     },
     methods: {
@@ -291,7 +356,7 @@ export default {
         },
         timeElapsedHandler() {},
         initData() {
-            console.log("initData", this.issueOpenInfo);
+            // console.log("initData", this.issueOpenInfo);
             this.draw_num = this.issueOpenInfo.OpenCode.split(",");
         },
         toSearch() {
@@ -303,6 +368,16 @@ export default {
         },
         reset() {
             this.historyOpenInfo = this.searchHistoryOpenInfo;
+        },
+        toPlay(e) {
+            console.log("e", e);
+            this.dialogVisible = true;
+            this.toPlayData = e.row;
+            // this.video = "@" + e.row.VideoUrl;
+
+            // :src="require(`@${toPlayData.VideoUrl}`)"
+
+            // :src="require('@/video/2021067.mp4')"
         },
     },
     mounted() {

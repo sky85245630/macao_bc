@@ -100,7 +100,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .home_box {
     margin-top: 20px;
     box-shadow: 0 1px 4px #c8c8c8;
@@ -127,52 +127,6 @@ export default {
     background-color: #ffc9c9;
     border: 1px solid #d80011;
     color: #d80011;
-}
-
-.num {
-    height: 60px;
-    padding-left: 20px;
-    margin-top: 40px;
-}
-
-.num > span {
-    height: 60px;
-    width: 100%;
-    display: inline-block;
-}
-
-.num .balls {
-    display: inline-block;
-    height: 60px;
-    width: 60px;
-    text-align: center;
-    line-height: 56px;
-    background-position: -6px -5px;
-    background-size: 70px;
-    background-repeat: no-repeat;
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.num .ball {
-    margin-right: 30px;
-    position: relative;
-    text-align: center;
-    display: inline-block;
-    height: 60px;
-    width: 60px;
-}
-
-.num .ball .shengxiao {
-    color: #515151;
-    font-size: 15px;
-    position: absolute;
-    top: 70px;
-    left: 23px;
-}
-
-.num .blue {
-    background-image: url("../assets/ball.png");
 }
 
 .el-table th {

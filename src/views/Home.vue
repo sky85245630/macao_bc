@@ -116,6 +116,7 @@
             :title="currentInfo.LotteryName + ' 第' + toPlayData.Issue + '期'"
             :visible.sync="dialogVisible"
             width="70%"
+            top="5vh"
             class="home_left"
         >
             <el-row style="text-align: center;">
@@ -273,14 +274,14 @@ export default {
 
         timeElapsedHandler() {},
         initData() {
-            console.log("initData", this.issueOpenInfo);
+            // console.log("initData", this.issueOpenInfo);
             this.draw_num = this.issueOpenInfo.OpenCode.split(",");
         },
         toPlay(e) {
             console.log("e", e);
             this.dialogVisible = true;
             this.toPlayData = e.row;
-            this.video = "@" + e.row.VideoUrl;
+            // this.video = "@" + e.row.VideoUrl;
 
             // :src="require(`@${toPlayData.VideoUrl}`)"
 
