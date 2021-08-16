@@ -368,6 +368,7 @@ export default {
         },
         reset() {
             this.historyOpenInfo = this.searchHistoryOpenInfo;
+            this.search = "";
         },
         toPlay(e) {
             console.log("e", e);
