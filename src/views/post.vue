@@ -266,7 +266,7 @@ export default {
             //     },
             // ],
             flip_endTime: "2021-8-14 17:25:00",
-            data_list: [
+            list: [
                 "鼠",
                 "牛",
                 "虎",
@@ -280,6 +280,7 @@ export default {
                 "狗",
                 "猪",
             ],
+            data_list: [],
             color_list: ["red", "red", "green", "green", "blue", "blue"],
             draw_num: "",
             currentInfo: {},
@@ -356,8 +357,12 @@ export default {
         },
         timeElapsedHandler() {},
         initData() {
-            // console.log("initData", this.issueOpenInfo);
             this.draw_num = this.issueOpenInfo.OpenCode.split(",");
+            let petQQ = this.currentInfo.Pet;
+            let index = this.list.indexOf(petQQ) - 1;
+            let front = this.list.slice(index);
+            let end = this.list.slice(0, index);
+            this.data_list = front.concat(end);
         },
         toSearch() {
             // this.getHistoryOpenInfo();
