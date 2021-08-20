@@ -179,7 +179,7 @@ export default {
             // plan1.0
             // console.log("statttt", e);
             if (e) {
-                console.log("监听到kj_day");
+                // console.log("监听到kj_day");
                 this.getCurrentInfo();
             } else {
                 this.msg = "监听不到";
