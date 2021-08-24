@@ -5,7 +5,7 @@
                 <el-row>
                     <el-col :span="12">
                         <div style="float: left;">
-                            <img alt="Vue logo" src="@/assets/logo.png" />
+                            <img alt="logo" src="@/assets/logo.png" />
                         </div>
                     </el-col>
                     <el-col :span="12">
