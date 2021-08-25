@@ -16,11 +16,6 @@ const routes = [
         component: Home,
     },
     {
-        path: "/countdown",
-        name: "Countdown",
-        component: () => import("../views/countdown.vue"),
-    },
-    {
         path: "/about",
         name: "About",
         // route level code-splitting
