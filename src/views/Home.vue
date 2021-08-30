@@ -52,6 +52,7 @@
                     </el-col>
                     <el-col :span="9">
                         <flip-countdown
+                            v-if="flip_endTime"
                             :deadline="flip_endTime"
                             :showDays="true"
                             @timeElapsed="timeElapsedHandler"
@@ -189,7 +190,7 @@ export default {
     data() {
         return {
             video: "@/video/2021063.mp4",
-            flip_endTime: "2021-8-14 17:25:00",
+            flip_endTime: null,
             imgUrl: [
                 "https://mcjccdn-qq.goluosi.com/macaujc/pc/img/swiper1.jpg",
                 "https://mcjccdn-qq.goluosi.com/macaujc/pc/img/swiper3.jpg",
@@ -241,6 +242,7 @@ export default {
             this.axios.post(url, data).then((res) => {
                 let { data } = res.data;
                 this.currentInfo = data;
+                this.flip_endTime = data.EndTime;
             });
             // console.log("this.$store.state.kj_day", this.$store.state.kj_day);
             this.getIssueOpenInfo();
@@ -297,6 +299,7 @@ export default {
     mounted() {
         // this.initData();
         this.getCurrentInfo();
+        this.flip_endTime = this.currentInfo.EndTime;
         // this.getIssueOpenInfo();
     },
 };
